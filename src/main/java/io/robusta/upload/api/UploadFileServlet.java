@@ -30,8 +30,9 @@ public class UploadFileServlet extends HttpServlet {
 
 		try {
 			File folder = new File("vault");
-			if (!folder.exists())
-				folder.mkdir();
+
+			if (!folder.exists()) folder.mkdir();
+			
 			for (Part part : request.getParts()) {
 				ArrayList<String> names = new ArrayList<String>(Arrays.asList(folder.list()));
 				String fileName = extractFileName(part);
@@ -46,7 +47,7 @@ public class UploadFileServlet extends HttpServlet {
 						rep = false;
 					}
 				}
-				if (rep = true) {
+				if (rep) {
 					String [] parts = fileName.split("\\.");
 					String part1 = parts[0];
 					String part2 = parts[1];

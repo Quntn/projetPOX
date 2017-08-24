@@ -8,14 +8,21 @@
 <title>Stockage fichier</title>
 </head>
 <body>
-<h1>Stockage de fichiers dans le serveur</h1>
+<h1>Fichiers</h1>
 <div>
 <%
 List<String> listNames = (List<String>) request.getAttribute("filenames");
 for (String name : listNames) { 
 	%>
 	<div class='texte'><%=name%></div>
-	
+	<form method="post" action="${pageContext.request.contextPath}/renamefile">
+	<input type="hidden" name="filename" value='<%=name%>' />
+	<input type="submit" value="Renommer"/>
+	</form>
+	<form method="post" action="${pageContext.request.contextPath}/deletefile">
+	<input type="hidden" name="filename" value='<%=name%>' />
+	<input type="submit" value="Supprimer"/>
+	</form>
 	<%
 		}
 %>
@@ -23,15 +30,12 @@ for (String name : listNames) {
 <div style="padding:5px; color:red;font-style:italic;">
        ${errorMessage}
     </div>
-    
-    <h2>Upload Files</h2>
- 
+
     <form method="post" action="${pageContext.request.contextPath}/uploadfile"
         enctype="multipart/form-data">
-        
-        Select file to upload:
+
         <br />
-        <input type="file" name="file"  />
+        <input type="file" name="file" multiple />
         <br />
        
         <br />
