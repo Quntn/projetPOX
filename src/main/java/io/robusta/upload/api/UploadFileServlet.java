@@ -39,22 +39,17 @@ public class UploadFileServlet extends HttpServlet {
 
 				/*----------------------------------------------*/
 
-				boolean rep = true;
-
-				for (int i = 0; i < names.size(); i++) {
-					int j = i++;
-					if (fileName == names.get(j)) {
-						rep = false;
-					}
-				}
-				if (rep) {
+				
+				while (names.contains(fileName)) {
 					String [] parts = fileName.split("\\.");
 					String part1 = parts[0];
 					String part2 = parts[1];
-					String filePath = folder.getAbsolutePath() + "/" + part1 + "-bis."+part2 ;
-					part.write(filePath);
-				} 
-
+					fileName= part1 + "-bis."+part2 ;
+					
+				}
+				
+				String filePath = folder.getAbsolutePath() + "/" + fileName ;
+				part.write(filePath);
 				/*----------------------------------------------*/
 
 			} 

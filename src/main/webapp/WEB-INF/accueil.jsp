@@ -13,14 +13,18 @@
 <%
 List<String> listNames = (List<String>) request.getAttribute("filenames");
 for (String name : listNames) { 
+	String[] splitter = name.split("\\.");
+	String extension = "";
+	if (splitter.length>1) extension="."+splitter[splitter.length-1];
+	
 	%>
 	<div class='texte'><%=name%></div>
 	<form method="post" action="${pageContext.request.contextPath}/renamefile">
-	<input type="hidden" name="filename" value='<%=name%>' />
-	<input type="submit" value="Renommer"/>
+	<input type="hidden" name="filename" value="<%=name%>" />
+	<input type="text" placeholder="<%=name%>" name="newfilename"/>  <%=extension%>  <input type="submit" value="Renommer"/>
 	</form>
 	<form method="post" action="${pageContext.request.contextPath}/deletefile">
-	<input type="hidden" name="filename" value='<%=name%>' />
+	<input type="hidden" name="filename" value='<%=name%>' /> 
 	<input type="submit" value="Supprimer"/>
 	</form>
 	<%
