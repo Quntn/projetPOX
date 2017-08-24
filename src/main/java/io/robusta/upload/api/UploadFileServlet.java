@@ -2,6 +2,10 @@ package io.robusta.upload.api;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -25,17 +29,32 @@ public class UploadFileServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	public static final String VAULT = "C://code//servers//wildfly-10.0.0.Final//bin//vault";
 
+	private Connection conn;
+
+    public UploadFileServlet() {
+	
+        conn = DbUtil.getConnection();
+    }
+
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
+		
+
 		try {
+
+			
 			File folder = new File("vault");
 
-			if (!folder.exists()) folder.mkdir();
-			
+			if (!folder.exists())
+				folder.mkdir();
+
 			for (Part part : request.getParts()) {
 				ArrayList<String> names = new ArrayList<String>(Arrays.asList(folder.list()));
 				String fileName = extractFileName(part);
+
+			
+			
 
 				/*----------------------------------------------*/
 
@@ -48,16 +67,32 @@ public class UploadFileServlet extends HttpServlet {
 					}
 				}
 				if (rep) {
-					String [] parts = fileName.split("\\.");
+					String[] parts = fileName.split("\\.");
 					String part1 = parts[0];
 					String part2 = parts[1];
-					String filePath = folder.getAbsolutePath() + "/" + part1 + "-bis."+part2 ;
+					String filePath = folder.getAbsolutePath() + "/" + part1 + "-bis." + part2;
 					part.write(filePath);
-				} 
+				}
+				 try {
+			            // constructs SQL statement
+			            String sql = "INSERT INTO contacts (file_name) values (?)";
+			            PreparedStatement statement = conn.prepareStatement(sql);
+			            statement.setString(1, fileName);
+			           
+
+			            
+
+			            // sends the statement to the database server
+			            int row = statement.executeUpdate();
+			           
+			        } catch (SQLException ex) {
+			          
+			            ex.printStackTrace();
+			        }
 
 				/*----------------------------------------------*/
 
-			} 
+			}
 
 			response.sendRedirect(request.getContextPath() + "/accueil");
 
@@ -66,6 +101,19 @@ public class UploadFileServlet extends HttpServlet {
 			request.setAttribute("message", "Erreur de fichier, réessayez");
 			response.sendRedirect(request.getContextPath() + "/accueil");
 		}
+		
+		
+		
+//		finally {
+//			if (conn != null) {
+//				// closes the database connection
+//				try {
+//					conn.close();
+//				} catch (SQLException ex) {
+//					ex.printStackTrace();
+//				}
+//			}
+//		}
 	}
 
 	private String extractFileName(Part part) {
