@@ -15,7 +15,7 @@ List<String> listNames = (List<String>) request.getAttribute("filenames");
 for (String name : listNames) { 
 	%>
 	<div class='texte'><%=name%></div>
-
+	
 	<%
 		}
 %>
