@@ -1,3 +1,4 @@
+package io.robusta.upload.api;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,11 +19,8 @@ import javax.servlet.http.Part;
 		maxRequestSize = 1024 * 1024 * 50) // 50MB
 public class UploadFileServlet extends HttpServlet {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
-	public static final String VAULT = "C://code//servers//wildfly-10.0.0.Final//bin//vault";
+	public static final String VAULT = "C://code//wildfly-10.0.0.Final//bin//vault";
 
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -30,28 +28,28 @@ public class UploadFileServlet extends HttpServlet {
 		try {
 			File folder = new File("vault");
 
-			if (!folder.exists()) folder.mkdir();
-			
+			if (!folder.exists())
+				folder.mkdir();
+
 			for (Part part : request.getParts()) {
 				ArrayList<String> names = new ArrayList<String>(Arrays.asList(folder.list()));
 				String fileName = extractFileName(part);
 
 				/*----------------------------------------------*/
 
-				
 				while (names.contains(fileName)) {
-					String [] parts = fileName.split("\\.");
+					String[] parts = fileName.split("\\.");
 					String part1 = parts[0];
 					String part2 = parts[1];
-					fileName= part1 + "-bis."+part2 ;
-					
+					fileName = part1 + "-bis." + part2;
+
 				}
-				
-				String filePath = folder.getAbsolutePath() + "/" + fileName ;
+
+				String filePath = folder.getAbsolutePath() + "/" + fileName;
 				part.write(filePath);
 				/*----------------------------------------------*/
 
-			} 
+			}
 
 			response.sendRedirect(request.getContextPath() + "/accueil");
 
