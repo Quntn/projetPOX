@@ -10,13 +10,6 @@
 		<welcome-file>accueil.html</welcome-file>		
 	</welcome-file-list>
 	
-	<servlet>
-        <servlet-name>UploadFileServlet</servlet-name>
-        <servlet-class>io.robusta.upload.api.UploadFileServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>UploadFileServlet</servlet-name>
-        <url-pattern>/uploadfile</url-pattern>
-    </servlet-mapping>
+ 
 
 </web-app>

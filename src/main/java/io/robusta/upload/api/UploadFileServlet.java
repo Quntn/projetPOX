@@ -23,6 +23,12 @@ public class UploadFileServlet extends HttpServlet {
 	public static final String VAULT = "C://code//wildfly-10.0.0.Final//bin//vault";
 
 	@Override
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		resp.getWriter().print("USE POST");
+	}
+	
+	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		try {
