@@ -18,6 +18,5 @@
         <servlet-name>UploadFileServlet</servlet-name>
         <url-pattern>/uploadfile</url-pattern>
     </servlet-mapping>
-	
-	
+
 </web-app>

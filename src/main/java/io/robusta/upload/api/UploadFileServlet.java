@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.MultipartConfig;
+
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -14,9 +14,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
 @WebServlet("/uploadfile")
-@MultipartConfig(fileSizeThreshold = 1024 * 1024 * 2, // 2MB
+/*@MultipartConfig(fileSizeThreshold = 1024 * 1024 * 2, // 2MB
 		maxFileSize = 1024 * 1024 * 10, // 10MB
-		maxRequestSize = 1024 * 1024 * 50) // 50MB
+		maxRequestSize = 1024 * 1024 * 50) // 50MB*/
 public class UploadFileServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
