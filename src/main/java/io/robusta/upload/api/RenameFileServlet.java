@@ -21,10 +21,12 @@ public class RenameFileServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String name = req.getParameter("filename");
 		String newName = req.getParameter("newfilename");
+		String extension = req.getParameter("extension");
 		File fileToRename = new File("vault/"+name);
-		File fileRenamed = new File("vault/"+newName);
+		File fileRenamed = new File("vault/"+newName+extension);
 		System.out.println(name);
 		System.out.println(newName);
+		System.out.println(extension);
 		
 		if (fileToRename.exists()) {
 			System.out.println("Le fichier à renommer existe");
