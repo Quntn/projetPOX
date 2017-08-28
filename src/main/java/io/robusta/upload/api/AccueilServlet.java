@@ -21,6 +21,8 @@ public class AccueilServlet extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+	
 		File folder = new File("vault");
 		File[] listOfFiles = folder.listFiles();
 		List<String> listOfFilesName = new ArrayList<>();
@@ -31,6 +33,7 @@ public class AccueilServlet extends HttpServlet {
 				if (listOfFiles[i].isFile()) {
 					listOfFilesName.add(listOfFiles[i].getName());
 				}
+				
 			}
 			
 		}

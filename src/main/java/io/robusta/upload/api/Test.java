@@ -30,7 +30,7 @@ public class Test {
             
             //Servlet Copie Fichier
             FileInputStream in = new FileInputStream(dialogue.getSelectedFile());
-            FileOutputStream out = new FileOutputStream("C://code//workspace//pox3//src//main//webapp//vault//bis-image.jpg");
+            FileOutputStream out = new FileOutputStream("C:/Code/wildfly-10.0.0.Final/bin/vault");
             int c;
             while ((c = in.read()) != -1) {
             out.write(c);
