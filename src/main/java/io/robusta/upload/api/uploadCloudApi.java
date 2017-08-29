@@ -14,17 +14,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
+import com.dropbox.core.DbxException;
 import com.dropbox.core.DbxRequestConfig;
 import com.dropbox.core.v2.DbxClientV2;
 import com.dropbox.core.v2.files.FileMetadata;
+import com.dropbox.core.v2.files.UploadErrorException;
 import com.dropbox.core.v2.sharing.PathLinkMetadata;
+import com.dropbox.core.v2.sharing.SharedLinkMetadata;
 
 @WebServlet("/uploadfilecloud")
 @MultipartConfig(fileSizeThreshold = 1024 * 1024 * 2, // 2MB
-maxFileSize = 1024 * 1024 * 10, // 10MB
-maxRequestSize = 1024 * 1024 * 50) // 50MB
+		maxFileSize = 1024 * 1024 * 10, // 10MB
+		maxRequestSize = 1024 * 1024 * 50) // 50MB
 public class uploadCloudApi extends HttpServlet {
-
 
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -43,10 +45,7 @@ public class uploadCloudApi extends HttpServlet {
 					String part1 = parts[0];
 					String part2 = parts[1];
 					fileName = part1 + "-bis." + part2;
-
 				}
-
-				String filePath = folder.getAbsolutePath() + "/" + fileName;
 
 				DbxRequestConfig config = DbxRequestConfig.newBuilder("dropbox/java-tutorial").withUserLocale("en_US")
 						.build();
@@ -61,8 +60,18 @@ public class uploadCloudApi extends HttpServlet {
 
 					FileMetadata uploadedFile = client.files().uploadBuilder("/" + fileName)
 							.uploadAndFinish(inputStream);
-					PathLinkMetadata sharedUrl = client.sharing().createSharedLink("/" + fileName);
+					SharedLinkMetadata sharedUrl = client.sharing().createSharedLinkWithSettings("/" + fileName);
 					System.out.println("Uploaded: " + uploadedFile.toString() + " URL " + sharedUrl.getUrl());
+
+				} catch (UploadErrorException ex) {
+					System.err.println("Error uploading to Dropbox: " + ex.getMessage());
+					System.exit(1);
+				} catch (DbxException ex) {
+					System.err.println("Error uploading to Dropbox: " + ex.getMessage());
+					System.exit(1);
+				} catch (IOException ex) {
+					System.err.println("Error reading from file \"" + inputStream + "\": " + ex.getMessage());
+					System.exit(1);
 
 				} finally {
 					inputStream.close();
@@ -77,6 +86,7 @@ public class uploadCloudApi extends HttpServlet {
 			response.sendRedirect(request.getContextPath() + "/accueil");
 		}
 	}
+
 	private String extractFileName(Part part) {
 
 		String contentDisp = part.getHeader("content-disposition");
