@@ -28,9 +28,6 @@ public class RenameFileServlet extends HttpServlet {
 		String extension = req.getParameter("extension");
 		File fileToRename = new File("vault/"+name);
 		File fileRenamed = new File("vault/"+newName+extension);
-		System.out.println(name);
-		System.out.println(newName);
-		System.out.println(extension);
 		
 		if (fileToRename.exists()) {
 			System.out.println("Le fichier à renommer existe");

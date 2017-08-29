@@ -20,20 +20,16 @@ import javax.servlet.http.Part;
 
 import com.dropbox.core.DbxException;
 import com.dropbox.core.DbxRequestConfig;
-import com.dropbox.core.v1.DbxEntry;
-import com.dropbox.core.v2.DbxClientV2;
-import com.dropbox.core.v2.files.FileMetadata;
-import com.dropbox.core.v2.files.ListFolderResult;
-import com.dropbox.core.v2.files.Metadata;
-import com.dropbox.core.v2.files.UploadErrorException;
-import com.dropbox.core.v2.sharing.PathLinkMetadata;
-import com.dropbox.core.v2.sharing.SharedLinkMetadata;
+import com.dropbox.core.DbxWebAuthNoRedirect;
+import com.dropbox.core.DbxWriteMode;
 
-@WebServlet("/uploadfilecloud")
-@MultipartConfig(fileSizeThreshold = 1024 * 1024 * 2, // 2MB
-		maxFileSize = 1024 * 1024 * 10, // 10MB
-		maxRequestSize = 1024 * 1024 * 50) // 50MB
-public class uploadCloudApi extends HttpServlet {
+//@WebServlet("/uploadfile")
+public class UploadCloudApi extends HttpServlet {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -89,7 +85,7 @@ public class uploadCloudApi extends HttpServlet {
 			response.sendRedirect(request.getContextPath() + "/accueil");
 		} catch (Exception e) {
 			e.printStackTrace();
-			request.setAttribute("message", "Erreur de fichier, réessayez");
+			request.setAttribute("message", "Erreur de fichier, reessayez");
 			response.sendRedirect(request.getContextPath() + "/accueil");
 		}
 	}

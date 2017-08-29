@@ -14,6 +14,7 @@ public class WebServiceApplication extends Application {
 
 		Set<Class<?>> s = new HashSet<Class<?>>();
 		s.add(WebService.class);
+		s.add(DatabaseWebService.class);
 		return s;
 	}
 }

@@ -28,15 +28,7 @@ public class WebService {
 		} else {
 			for (int i = 0; i < listOfFiles.length; i++) {
 				if (listOfFiles[i].isFile()) {
-					FileDTO fileDTO = new FileDTO();
-					String name = listOfFiles[i].getName();
-					String[] splitter = name.split("\\.");
-					String extension = "";
-					if (splitter.length>1) extension="."+splitter[splitter.length-1];
-					String placeholder = name.substring (0, ((name.length() - extension.length())));
-					fileDTO.setNom(name);
-					fileDTO.setExtension(extension);
-					fileDTO.setPlaceholder(placeholder);
+					FileDTO fileDTO = new Outils().createFileDTOFromName(listOfFiles[i].getName());
 					listOfFilesName.add(fileDTO);
 				}
 			}
