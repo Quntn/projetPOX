@@ -1,9 +1,12 @@
 package io.robusta.upload.api;
 
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -15,85 +18,80 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
-import com.dropbox.core.DbxException;
-import com.dropbox.core.DbxRequestConfig;
-import com.dropbox.core.v2.DbxClientV2;
-import com.dropbox.core.v2.files.FileMetadata;
-import com.dropbox.core.v2.files.UploadErrorException;
-import com.dropbox.core.v2.sharing.PathLinkMetadata;
-import com.dropbox.core.v2.sharing.SharedLinkMetadata;
+import com.mysql.jdbc.PreparedStatement;
 
-@WebServlet("/uploadfiledropbox")
+@WebServlet("/uploadfiledatabase")
 @MultipartConfig(fileSizeThreshold = 1024 * 1024 * 2, // 2MB
 		maxFileSize = 1024 * 1024 * 10, // 10MB
 		maxRequestSize = 1024 * 1024 * 50) // 50MB
-public class DbxUploadServlet extends HttpServlet {
+public class UploadFileServletDatabase extends HttpServlet {
 
+	/**
+	 * 
+	 */
 	private static final long serialVersionUID = 1L;
 	private static final int BUFFER_SIZE = 16177216;
 	public static final String VAULT = "C://code//servers//wildfly-10.0.0.Final//bin//vault";
 	private Connection connection;
 	private String dbURL = "jdbc:mysql://localhost:3306/AppDB";
-	private String dbUser = "root";
-	private String dbPass = "root";
-	final String APP_KEY = "giyaqd9q4awvl43";
-	final String APP_SECRET = "t116ok0707ghc18";
+    private String dbUser = "root";
+    private String dbPass = "root";
+    
+    
+    
+    private Connection getConnection() throws SQLException {
+
+		Connection connection = DriverManager.getConnection(dbURL, dbUser, dbPass);
+		return connection;
+
+	}
 
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
+       
 		try {
 			File folder = new File("vault");
 
-			if (!folder.exists())
-				folder.mkdir();
-
+			if (!folder.exists()) folder.mkdir();
+			
 			for (Part part : request.getParts()) {
 				ArrayList<String> names = new ArrayList<String>(Arrays.asList(folder.list()));
 				String fileName = extractFileName(part);
 
+				/*----------------------------------------------*/
+
+				
 				while (names.contains(fileName)) {
-					String[] parts = fileName.split("\\.");
+					String [] parts = fileName.split("\\.");
 					String part1 = parts[0];
 					String part2 = parts[1];
-					fileName = part1 + "-bis." + part2;
-
-				}
-
-				String filePath = folder.getAbsolutePath() + "/" + fileName;
-
-				DbxRequestConfig config = DbxRequestConfig.newBuilder("dropbox/java-tutorial").withUserLocale("en_US")
-						.build();
-				DbxClientV2 client = new DbxClientV2(config,
-						"rXd4qFWPnvAAAAAAAAAAEoS_V813cFWw5PGW_j8ZZH6962yWhls6-jqRV249u44y");
-
-				System.out.println("Linked account: " + client.users().getCurrentAccount().getName());
-
-				InputStream inputStream = part.getInputStream();
-
-				try {
-
-					FileMetadata uploadedFile = client.files().uploadBuilder("/" + fileName)
-							.uploadAndFinish(inputStream);
-					//PathLinkMetadata sharedUrl = client.sharing().createSharedLink("/" + fileName);
+					fileName= part1 + "-bis."+part2 ;
 					
-					SharedLinkMetadata sharedUrl = client.sharing().createSharedLinkWithSettings("/" + fileName);
-					System.out.println("Uploaded: " + uploadedFile.toString() + " URL " + sharedUrl.getUrl());
-
-				} catch (UploadErrorException ex) {
-		            System.err.println("Error uploading to Dropbox: " + ex.getMessage());
-		            System.exit(1);
-		        } catch (DbxException ex) {
-		            System.err.println("Error uploading to Dropbox: " + ex.getMessage());
-		            System.exit(1);
-		        } catch (IOException ex) {
-		            System.err.println("Error reading from file \"" + inputStream + "\": " + ex.getMessage());
-		            System.exit(1);
-		        }finally {
-					inputStream.close();
 				}
+				
+				String filePath = folder.getAbsolutePath() + "/" + fileName ;
+				//part.write(filePath);
+				
+				
+				/*----------------------------------------------*/
 
-			}
+				//Connection to DB
+				
+				InputStream inputStream = part.getInputStream();
+					
+                    //Class.forName("com.mysql.jdbc.Driver");
+                    DriverManager.registerDriver(new com.mysql.jdbc.Driver());
+                    connection = DriverManager.getConnection(dbURL, dbUser, dbPass);
+                    
+                
+                    String sql = "INSERT INTO files (file_name,photo) values (?,?)";
+                    PreparedStatement statement = (PreparedStatement) connection.prepareStatement(sql);
+                    statement.setString(1, fileName);
+                    statement.setBlob(2, inputStream);
+                    statement.executeUpdate();
+
+			} 
 
 			response.sendRedirect(request.getContextPath() + "/accueil");
 
@@ -102,9 +100,12 @@ public class DbxUploadServlet extends HttpServlet {
 			request.setAttribute("message", "Erreur de fichier, réessayez");
 			response.sendRedirect(request.getContextPath() + "/accueil");
 		}
-
+		
+		
 	}
-
+	
+	
+	
 	private String extractFileName(Part part) {
 
 		String contentDisp = part.getHeader("content-disposition");
@@ -123,3 +124,31 @@ public class DbxUploadServlet extends HttpServlet {
 	}
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
