@@ -1,35 +1,82 @@
 package io.robusta.upload.api;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Locale;
 
 import javax.servlet.ServletException;
-import javax.servlet.ServletInputStream;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
-import com.dropbox.core.DbxAppInfo;
-import com.dropbox.core.DbxAuthFinish;
-import com.dropbox.core.DbxClient;
-import com.dropbox.core.DbxEntry;
-import com.dropbox.core.DbxException;
 import com.dropbox.core.DbxRequestConfig;
-import com.dropbox.core.DbxWebAuthNoRedirect;
-import com.dropbox.core.DbxWriteMode;
+import com.dropbox.core.v2.DbxClientV2;
+import com.dropbox.core.v2.files.FileMetadata;
+import com.dropbox.core.v2.sharing.PathLinkMetadata;
 
-@WebServlet("/uploadfile")
+@WebServlet("/uploadfilecloud")
+@MultipartConfig(fileSizeThreshold = 1024 * 1024 * 2, // 2MB
+maxFileSize = 1024 * 1024 * 10, // 10MB
+maxRequestSize = 1024 * 1024 * 50) // 50MB
 public class uploadCloudApi extends HttpServlet {
 
+
+	@Override
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+		try {
+			File folder = new File("vault");
+
+			if (!folder.exists())
+				folder.mkdir();
+			for (Part part : request.getParts()) {
+				ArrayList<String> names = new ArrayList<String>(Arrays.asList(folder.list()));
+				String fileName = extractFileName(part);
+
+				while (names.contains(fileName)) {
+					String[] parts = fileName.split("\\.");
+					String part1 = parts[0];
+					String part2 = parts[1];
+					fileName = part1 + "-bis." + part2;
+
+				}
+
+				String filePath = folder.getAbsolutePath() + "/" + fileName;
+
+				DbxRequestConfig config = DbxRequestConfig.newBuilder("dropbox/java-tutorial").withUserLocale("en_US")
+						.build();
+				DbxClientV2 client = new DbxClientV2(config,
+						"rXd4qFWPnvAAAAAAAAAAEoS_V813cFWw5PGW_j8ZZH6962yWhls6-jqRV249u44y");
+
+				System.out.println("Linked account: " + client.users().getCurrentAccount().getName());
+
+				InputStream inputStream = part.getInputStream();
+
+				try {
+
+					FileMetadata uploadedFile = client.files().uploadBuilder("/" + fileName)
+							.uploadAndFinish(inputStream);
+					PathLinkMetadata sharedUrl = client.sharing().createSharedLink("/" + fileName);
+					System.out.println("Uploaded: " + uploadedFile.toString() + " URL " + sharedUrl.getUrl());
+
+				} finally {
+					inputStream.close();
+				}
+
+			}
+
+			response.sendRedirect(request.getContextPath() + "/accueil");
+		} catch (Exception e) {
+			e.printStackTrace();
+			request.setAttribute("message", "Erreur de fichier, réessayez");
+			response.sendRedirect(request.getContextPath() + "/accueil");
+		}
+	}
 	private String extractFileName(Part part) {
 
 		String contentDisp = part.getHeader("content-disposition");
@@ -46,45 +93,4 @@ public class uploadCloudApi extends HttpServlet {
 		}
 		return null;
 	}
-
-	@Override
-	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-		final String APP_KEY = "9xgjdh5771cjsvv";
-		final String APP_SECRET = "5dsbbx64henfnfw";
-		try {
-
-			for (Part part : request.getParts()) {
-
-				String fileName = extractFileName(part);
-				System.out.println("file name : " + fileName);
-
-				
-
-				DbxRequestConfig config = new DbxRequestConfig("JavaTutorial/1.0", Locale.getDefault().toString());
-
-				
-
-				DbxClient client = new DbxClient(config, "XtwFq1pT03AAAAAAAAAAC1oCLItBvynAESvqCHJmL7A");
-
-				String filePath = "C:/Users/AELION/Desktop" + "/" + fileName;
-
-				File inputFile = new File(filePath);
-				FileInputStream inputStream = new FileInputStream(inputFile);
-				try {
-					DbxEntry.File uploadedFile = client.uploadFile(fileName, DbxWriteMode.add(), inputFile.length(),
-							inputStream);
-				} finally {
-					inputStream.close();
-				}
-			}
-
-			response.sendRedirect(request.getContextPath() + "/accueil");
-		} catch (Exception e) {
-			e.printStackTrace();
-			request.setAttribute("message", "Erreur de fichier, réessayez");
-			response.sendRedirect(request.getContextPath() + "/accueil");
-		}
-	}
-
 }

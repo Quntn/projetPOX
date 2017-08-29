@@ -10,9 +10,6 @@
 <body>
 <h1>Fichiers</h1>
 
-<div style="padding:5px; color:red;font-style:italic;">
-       ${errorMessage}
-    </div>
 
     <form method="post" action="${pageContext.request.contextPath}/uploadfile"
         enctype="multipart/form-data">
@@ -22,9 +19,21 @@
         <br />
        
         <br />
-        <input type="submit" value="Upload" />
-       	
+        <input type="submit" value="Upload on DataBase" />
+       
     </form>
+      <form method="post" action="${pageContext.request.contextPath}/uploadfilecloud"
+        enctype="multipart/form-data">
+
+        <br />
+        <input type="file" name="file" multiple />
+        <br />
+       
+        <br />
+        <input type="submit" value="Upload on Cloud" />
+       
+    </form>
+    
     <div>${message}</div>
 </body>
 </html>
