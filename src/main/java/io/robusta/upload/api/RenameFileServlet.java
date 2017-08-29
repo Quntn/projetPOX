@@ -21,6 +21,10 @@ public class RenameFileServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String name = req.getParameter("filename");
 		String newName = req.getParameter("newfilename");
+		if (newName.contains(" ")||newName.isEmpty()) {
+			resp.sendRedirect(req.getContextPath() + "/accueil");
+			return;
+		}
 		String extension = req.getParameter("extension");
 		File fileToRename = new File("vault/"+name);
 		File fileRenamed = new File("vault/"+newName+extension);
@@ -29,15 +33,15 @@ public class RenameFileServlet extends HttpServlet {
 		System.out.println(extension);
 		
 		if (fileToRename.exists()) {
-			System.out.println("Le fichier ‡ renommer existe");
+			System.out.println("Le fichier √† renommer existe");
 			if (fileRenamed.exists()) {
-				System.out.println("Le nouveau nom est dÈj‡ pris") ;
+				System.out.println("Le nouveau nom est d√©j√† pris") ;
 			} else {
 				System.out.println("Le nouveau nom est disponible");
-				if (fileToRename.renameTo(fileRenamed)) System.out.println("Fichier renommÈ avec succËs");
+				if (fileToRename.renameTo(fileRenamed)) System.out.println("Fichier renomm√© avec succ√®s");
 			}
 		} else {
-			System.out.println("Le fichier ‡ renommer n'existe pas");
+			System.out.println("Le fichier √† renommer n'existe pas");
 		}
 		resp.sendRedirect(req.getContextPath() + "/accueil");
 		

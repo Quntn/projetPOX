@@ -86,7 +86,7 @@ public class UploadFileServlet extends HttpServlet {
 			response.sendRedirect(request.getContextPath() + "/accueil");
 		} catch (Exception e) {
 			e.printStackTrace();
-			request.setAttribute("message", "Erreur de fichier, réessayez");
+			request.setAttribute("message", "Erreur de fichier, rÃ©essayez");
 			response.sendRedirect(request.getContextPath() + "/accueil");
 		}
 	}

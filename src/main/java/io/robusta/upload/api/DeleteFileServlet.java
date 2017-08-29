@@ -23,7 +23,7 @@ public class DeleteFileServlet extends HttpServlet {
 			System.out.println(name);
 			File fileToDelete = new File("vault/"+name);
 			if (fileToDelete.exists()) System.out.println("Le fichier existe");
-			if (fileToDelete.delete()) System.out.println("Le fichier est supprimé");
+			if (fileToDelete.delete()) System.out.println("Le fichier est supprimÃ©");
 			resp.sendRedirect(req.getContextPath() + "/accueil");
 			
 	}

@@ -12,7 +12,7 @@ public class Test {
  
 
     public static void main(String[] args) throws IOException {
-        // Exemple numéro 1
+        // Exemple numÃ©ro 1
         
         {
             //Servlet Choix Fichier
@@ -40,26 +40,26 @@ public class Test {
         }
          
          /*
-        // Exemple numéro 2
-        // Boîte de sélection de fichier à partir du répertoire courant
+        // Exemple numÃ©ro 2
+        // BoÃ®te de sÃ©lection de fichier Ã  partir du rÃ©pertoire courant
         File repertoireCourant = null;
         try {
-            // obtention d'un objet File qui désigne le répertoire courant. Le
-            // "getCanonicalFile" n'est pas absolument nécessaire mais permet
-            // d'éviter les /Truc/./Chose/ ...
+            // obtention d'un objet File qui dÃ©signe le rÃ©pertoire courant. Le
+            // "getCanonicalFile" n'est pas absolument nÃ©cessaire mais permet
+            // d'Ã©viter les /Truc/./Chose/ ...
             repertoireCourant = new File(".").getCanonicalFile();
-            System.out.println("Répertoire courant : " + repertoireCourant);
+            System.out.println("RÃ©pertoire courant : " + repertoireCourant);
         } catch(IOException e) {}
          
-        // création de la boîte de dialogue dans ce répertoire courant
-        // (ou dans "home" s'il y a eu une erreur d'entrée/sortie, auquel
+        // crÃ©ation de la boÃ®te de dialogue dans ce rÃ©pertoire courant
+        // (ou dans "home" s'il y a eu une erreur d'entrÃ©e/sortie, auquel
         // cas repertoireCourant vaut null)
         JFileChooser dialogue = new JFileChooser(repertoireCourant);
          
         // affichage
         dialogue.showOpenDialog(null);
          */
-        // récupération du fichier sélectionné
+        // rÃ©cupÃ©ration du fichier sÃ©lectionnÃ©
         
  
     }
