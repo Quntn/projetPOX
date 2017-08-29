@@ -20,7 +20,7 @@ import javax.servlet.http.Part;
 
 import com.mysql.jdbc.PreparedStatement;
 
-@WebServlet("/uploadfile")
+@WebServlet("/uploadfileserver")
 @MultipartConfig(fileSizeThreshold = 1024 * 1024 * 2, // 2MB
 		maxFileSize = 1024 * 1024 * 10, // 10MB
 		maxRequestSize = 1024 * 1024 * 50) // 50MB
@@ -71,26 +71,10 @@ public class UploadFileServlet extends HttpServlet {
 				}
 				
 				String filePath = folder.getAbsolutePath() + "/" + fileName ;
-				//part.write(filePath);
+				part.write(filePath);
 				
 				
-				/*----------------------------------------------*/
-
-				//Connection to DB
 				
-				InputStream inputStream = part.getInputStream();
-					
-                    //Class.forName("com.mysql.jdbc.Driver");
-                    DriverManager.registerDriver(new com.mysql.jdbc.Driver());
-                    connection = DriverManager.getConnection(dbURL, dbUser, dbPass);
-                    
-                
-                    String sql = "INSERT INTO files (file_name,photo) values (?,?)";
-                    PreparedStatement statement = (PreparedStatement) connection.prepareStatement(sql);
-                    statement.setString(1, fileName);
-                    statement.setBlob(2, inputStream);
-                    statement.executeUpdate();
-
 			} 
 
 			response.sendRedirect(request.getContextPath() + "/accueil");
