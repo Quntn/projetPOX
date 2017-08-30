@@ -13,6 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 import javax.servlet.ServletException;
@@ -107,5 +108,23 @@ public class UploadFileServlet extends HttpServlet {
 		}
 		return null;
 	}
+	public List<FileDTO> findAll() {
+        try {
+            String sql = "SELECT * FROM `files`";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            ResultSet resultSet = statement.executeQuery();
+            List<FileDTO> f = new ArrayList<>();
+            while (resultSet.next()) {
+                String name = resultSet.getString("file_name");
+                int id = resultSet.getInt("file_id");
+                FileDTO file = new Outils().createFileDTOFromName(name);
+                file.setId(id);
+                f.add(file);
+            }
+            return f;
+        } catch (SQLException e) {
+            throw new RuntimeException("Impossible de réaliser l(es) opération(s)", e);
+        }
+    }
 
 }

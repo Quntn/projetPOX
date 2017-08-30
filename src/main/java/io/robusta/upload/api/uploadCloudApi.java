@@ -3,8 +3,12 @@ package io.robusta.upload.api;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -16,8 +20,11 @@ import javax.servlet.http.Part;
 
 import com.dropbox.core.DbxException;
 import com.dropbox.core.DbxRequestConfig;
+import com.dropbox.core.v1.DbxEntry;
 import com.dropbox.core.v2.DbxClientV2;
 import com.dropbox.core.v2.files.FileMetadata;
+import com.dropbox.core.v2.files.ListFolderResult;
+import com.dropbox.core.v2.files.Metadata;
 import com.dropbox.core.v2.files.UploadErrorException;
 import com.dropbox.core.v2.sharing.PathLinkMetadata;
 import com.dropbox.core.v2.sharing.SharedLinkMetadata;
@@ -32,20 +39,10 @@ public class uploadCloudApi extends HttpServlet {
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		try {
-			File folder = new File("vault");
 
-			if (!folder.exists())
-				folder.mkdir();
 			for (Part part : request.getParts()) {
-				ArrayList<String> names = new ArrayList<String>(Arrays.asList(folder.list()));
+		
 				String fileName = extractFileName(part);
-
-				while (names.contains(fileName)) {
-					String[] parts = fileName.split("\\.");
-					String part1 = parts[0];
-					String part2 = parts[1];
-					fileName = part1 + "-bis." + part2;
-				}
 
 				DbxRequestConfig config = DbxRequestConfig.newBuilder("dropbox/java-tutorial").withUserLocale("en_US")
 						.build();
@@ -53,8 +50,19 @@ public class uploadCloudApi extends HttpServlet {
 						"rXd4qFWPnvAAAAAAAAAAEoS_V813cFWw5PGW_j8ZZH6962yWhls6-jqRV249u44y");
 
 				System.out.println("Linked account: " + client.users().getCurrentAccount().getName());
-
 				InputStream inputStream = part.getInputStream();
+
+				ListFolderResult entry = client.files().listFolder("");
+				List<Metadata> metadatas = entry.getEntries();
+				for (Metadata metadata : metadatas) {
+					String nameData = metadata.getName();
+					while (nameData.equals(fileName)) {
+						String[] parts = fileName.split("\\.");
+						String part1 = parts[0];
+						String part2 = parts[1];
+						fileName = part1 + "-bis." + part2;
+					}
+				}
 
 				try {
 
@@ -65,13 +73,12 @@ public class uploadCloudApi extends HttpServlet {
 
 				} catch (UploadErrorException ex) {
 					System.err.println("Error uploading to Dropbox: " + ex.getMessage());
-					System.exit(1);
+
 				} catch (DbxException ex) {
 					System.err.println("Error uploading to Dropbox: " + ex.getMessage());
-					System.exit(1);
+
 				} catch (IOException ex) {
 					System.err.println("Error reading from file \"" + inputStream + "\": " + ex.getMessage());
-					System.exit(1);
 
 				} finally {
 					inputStream.close();
@@ -103,4 +110,5 @@ public class uploadCloudApi extends HttpServlet {
 		}
 		return null;
 	}
+
 }
