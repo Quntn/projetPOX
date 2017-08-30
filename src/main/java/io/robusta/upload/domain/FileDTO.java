@@ -4,7 +4,7 @@ public class FileDTO {
 	String nom;
 	String extension;
 	String placeholder;
-	int id;
+	String id;
 
 	public String getNom() {
 		return nom;
@@ -30,13 +30,15 @@ public class FileDTO {
 		this.placeholder = placeholder;
 	}
 
-	public int getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(String id) {
 		this.id = id;
 	}
+
+
 
 	
 	

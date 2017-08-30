@@ -42,9 +42,13 @@
 		</attributes>
 	</classpathentry>
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> ajout web service
 >>>>>>> ajout web service
 =======
 >>>>>>> serveur et database fonctionnels java
+=======
+	<classpathentry kind="lib" path="C:/Users/AELION/Downloads/commons-lang3-3.6.jar"/>
+>>>>>>> travail
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
