@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -59,39 +57,7 @@ public class UploadFileServlet extends HttpServlet {
 		}
 	}
 	
-	private String extractFileName(Part part) {
-
-		String contentDisp = part.getHeader("content-disposition");
-		String[] items = contentDisp.split(";");
-		for (String s : items) {
-			if (s.trim().startsWith("filename")) {
-
-				String clientFileName = s.substring(s.indexOf("=") + 2, s.length() - 1);
-				clientFileName = clientFileName.replace("\\", "/");
-				int i = clientFileName.lastIndexOf('/');
-
-				return clientFileName.substring(i + 1);
-			}
-		}
-		return null;
-	}
-	public List<FileDTO> findAll() {
-        try {
-            String sql = "SELECT * FROM `files`";
-            PreparedStatement statement = connection.prepareStatement(sql);
-            ResultSet resultSet = statement.executeQuery();
-            List<FileDTO> f = new ArrayList<>();
-            while (resultSet.next()) {
-                String name = resultSet.getString("file_name");
-                int id = resultSet.getInt("file_id");
-                FileDTO file = new Outils().createFileDTOFromName(name);
-                file.setId(id);
-                f.add(file);
-            }
-            return f;
-        } catch (SQLException e) {
-            throw new RuntimeException("Impossible de réaliser l(es) opération(s)", e);
-        }
-    }
+	
+	
 
 }

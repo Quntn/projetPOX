@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -21,11 +22,13 @@ public class RenameFileDropboxServlet extends HttpServlet{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	@EJB
+	private DropboxService dbs;
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		try {
-			FileDropbox fdb = new FileDropbox();
 			
 			String fileName = req.getParameter("filename");
 			String newName = req.getParameter("newfilename");
@@ -36,7 +39,7 @@ public class RenameFileDropboxServlet extends HttpServlet{
 			
 			String extension = req.getParameter("extension");
 			
-			List<FileDTO> files = fdb.findAll();
+			List<FileDTO> files = dbs.findAll();
 			List<String> names = new ArrayList<>();
 			for (FileDTO file : files) {
 				names.add(file.getNom());
@@ -44,11 +47,14 @@ public class RenameFileDropboxServlet extends HttpServlet{
 			
 			newName = new Outils().createFileName(names, newName+extension);
 			
-			fdb.update(fileName, newName);
+			dbs.update(fileName, newName);
+			
+			resp.sendRedirect(req.getContextPath() + "/accueil");
 			
 		} catch (DbxException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			resp.sendRedirect(req.getContextPath() + "/accueil");
 		}
 		
 		

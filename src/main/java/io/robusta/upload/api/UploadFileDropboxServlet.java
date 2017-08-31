@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
@@ -21,14 +22,14 @@ import io.robusta.upload.domain.FileDTO;
 public class UploadFileDropboxServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     
-    
+    @EJB
+	private DropboxService dbs;
     
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
-            FileDropbox fdb = new FileDropbox();
             for (Part part : request.getParts()) {
-            	List<FileDTO> files = fdb.findAll();
+            	List<FileDTO> files = dbs.findAll();
                 List<String> names = new ArrayList<>();
                 for (FileDTO file : files) {
                 	names.add(file.getNom());
@@ -40,7 +41,7 @@ public class UploadFileDropboxServlet extends HttpServlet {
                 
                 
                 InputStream inputStream = part.getInputStream();
-                fdb.add(fileName, inputStream);
+                dbs.add(fileName, inputStream);
             }
             response.sendRedirect(request.getContextPath() + "/accueil");
         } catch (Exception e) {

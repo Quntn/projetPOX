@@ -2,6 +2,7 @@ package io.robusta.upload.api;
 
 import java.io.IOException;
 
+import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
@@ -20,13 +21,15 @@ public class DeleteFileDropboxServlet extends HttpServlet{
 	 */
 	private static final long serialVersionUID = 1L;
 	
+	@EJB
+	private DropboxService dbs;
+	
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		
 		try {
-			FileDropbox fdb = new FileDropbox();
 			String path = req.getParameter("filename");
-			fdb.delete(path);
+			dbs.delete("/"+path);
 			resp.sendRedirect(req.getContextPath() + "/accueil");
 		} catch (Exception e) {
 			e.printStackTrace();

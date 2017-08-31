@@ -73,7 +73,7 @@ public class FileDropbox {
 	
 	public void update(String previousName, String newName) throws RelocationErrorException, DbxException {
 
-		client.files().move(previousName, newName);
+		client.files().move("/"+previousName, "/"+newName);
 
 	}
 

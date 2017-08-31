@@ -28,11 +28,12 @@ public class RenameFileDatabaseServlet extends HttpServlet {
 			
 			String id = req.getParameter("id");
 			String newName = req.getParameter("newfilename");
-			if (newName.contains(" ")||newName.isEmpty()) {
+			String fileName = req.getParameter("filename");
+			String extension = req.getParameter("extension");
+			if (newName.contains(" ")||newName.isEmpty()||fileName.equals(newName+extension)) {
 				resp.sendRedirect(req.getContextPath() + "/accueil");
 				return;
 			}
-			String extension = req.getParameter("extension");
 			
 			List<FileDTO> listFiles = dao.findAll();
 			List<String> names = new ArrayList<>();

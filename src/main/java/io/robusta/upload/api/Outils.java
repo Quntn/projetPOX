@@ -3,6 +3,8 @@ package io.robusta.upload.api;
 import java.util.List;
 
 import javax.servlet.http.Part;
+
+import io.robusta.upload.domain.FileDTO;
 public class Outils {
 	public FileDTO createFileDTOFromName(String name) {
 		FileDTO file = new FileDTO();
